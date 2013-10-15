@@ -25,10 +25,11 @@ void CloudMesh::update()
 
 void CloudMesh::customDraw()
 {
-	meshBuffer[0].draw(ofPolyRenderMode::OF_MESH_FILL);
+	meshBuffer[0].draw(OF_MESH_FILL);
 	ofSetColor(255);
 	for(int i = 0; i < meshBuffer[0].getNumVertices(); i++)
 	{
+		ofSetColor(80);
 		ofDrawBitmapString(ofToString(i), meshBuffer[0].getVertex(i));
 	}
 }
@@ -51,6 +52,12 @@ void CloudMesh::populateMesh(ofMesh* useMesh, float z)
 			}
 		}
 	}
+	/*useMesh->addVertex(ofVec3f(-300.0f, 0, 0));
+
+	useMesh->addVertex(ofVec3f(300.0f, 0, 0));
+
+	useMesh->addVertex(ofVec3f(0, 300.0f, 0));
+	*/
 }
 
 void CloudMesh::triangulateMesh(ofMesh* useMesh)
@@ -109,12 +116,21 @@ void CloudMesh::moveClosest(ofMesh* fromMesh, ofMesh* toMesh, float t)
 
 void CloudMesh::moveNoiseField(ofMesh* useMesh){
 	float movDist = 1.0f;
+	float resolution = 0.1;
 	for(int i = 0; i < useMesh->getNumVertices(); i++)
 	{
 		ofVec3f currentVert = useMesh->getVertex(i);
-
+		float boxFilt[4];
+		for (int i = 0; i < 4; i++)
+		{
+			float jitX = ofRandomf() * resolution;
+			float jitY = ofRandomf() * resolution;
+			boxFilt[i] = ofNoise(currentVert.x+jitX, currentVert.y+jitY, 0.0f);
+		}
+		float angle = (boxFilt[0] + boxFilt[1] + boxFilt[2] + boxFilt[3])/4.0f; 
 		// radians                                                          1.5 * 2.0
-		float angle = (ofNoise(currentVert.x, currentVert.y, currentVert.z)) * 3.0f * PI;
-		useMesh->getVerticesPointer()[i] = currentVert + (ofVec3f(cos(angle), sin(angle), 0.0f).normalized());
+		angle = angle * 5.0f * PI;
+		//float angle = ofRandomuf() * 2.0f * PI;
+		useMesh->getVerticesPointer()[i] = currentVert + (ofVec3f(cos(angle), sin(angle), 0.0f).normalized()) * movDist;
 	}
 }
