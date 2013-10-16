@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 	//ofSetFullscreen(true);
+	ofSetLogLevel(OF_LOG_VERBOSE);
 	ofSetFrameRate(60);
 	ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
 	ofSetupScreenPerspective(ofGetWindowWidth(), ofGetWindowHeight(), 60.0, 5.0, 1000.0f);
@@ -15,7 +16,7 @@ void testApp::setup(){
 	}
 
 	mesh.setup();
-	//mesh.setParent(plane[0]);
+	mesh.setParent(plane[0]);
 
 
 }
@@ -33,12 +34,12 @@ void testApp::draw(){
 
 	// point to sphere point:  x = s + r*(p-s)/(norm(p-s))
 
-	/*for(int i = 0; i < 5; i++)
+	for(int i = 0; i < 5; i++)
 	{
-		//plane[i].rotate(0.01, 1, 0, 0);
-		glPointSize(5.0f-i);
+		plane[i].rotate(-0.1, 1, 0, 0);
+		glPointSize(3.0f-(3*i/5.0f));
 		plane[i].drawVertices();
-	}*/
+	}
 	mesh.draw();
 	ofSetColor(255);
 }

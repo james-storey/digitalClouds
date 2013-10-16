@@ -3,9 +3,14 @@
 void CloudMesh::setup()
 {
 	cloudCover = 0.5;
-	populateMesh(&meshBuffer[0], 0.0f);
+	populateMesh(&meshBuffer[0], 0);
 	triangulateMesh(&meshBuffer[0]);
-	
+
+	populateMesh(&meshBuffer[1], 1);
+	triangulateMesh(&meshBuffer[1]);
+
+	populateMesh(&meshBuffer[2], 2);
+	triangulateMesh(&meshBuffer[2]);
 }
 
 float CloudMesh::CloudExp(float v)
@@ -21,34 +26,47 @@ float CloudMesh::CloudExp(float v)
 void CloudMesh::update()
 {
 	moveNoiseField(&meshBuffer[0]);
+	moveNoiseField(&meshBuffer[1]);
+	moveNoiseField(&meshBuffer[2]);
 }
 
 void CloudMesh::customDraw()
 {
 	meshBuffer[0].draw(OF_MESH_FILL);
+	meshBuffer[1].draw(OF_MESH_FILL);
+	meshBuffer[2].draw(OF_MESH_FILL);
 	ofSetColor(255);
 	for(int i = 0; i < meshBuffer[0].getNumVertices(); i++)
 	{
 		ofSetColor(80);
-		ofDrawBitmapString(ofToString(i), meshBuffer[0].getVertex(i));
+		//ofDrawBitmapString(ofToString(i), meshBuffer[0].getVertex(i));
 	}
 }
 
 
-void CloudMesh::populateMesh(ofMesh* useMesh, float z)
+void CloudMesh::populateMesh(ofMesh* useMesh, int planeNum)
 {
 	useMesh->clearVertices();
-	for(int i = 0; i < 200; i++)
+	for(int i = 0; i < 2000; i++)
 	{
 		bool selected = false;
 		while (selected == false)
 		{
-			ofPoint p(ofRandomf(), ofRandomf(), -1.0f);
-			float noise = ofNoise(p.x, p.y, z);
+			float z;
+			if (useMesh == &meshBuffer[0])
+			{
+				z = ofRandomuf() * (100.0f * planeNum);
+			}
+			else
+			{
+				z = ofRandomf() * 100.0f + (-100.0f * planeNum);
+			}
+			ofPoint p(ofRandomf()*5, ofRandomf()*7.5, z);
+			float noise = ofNoise(p.x, p.y, p.z);
 			if(ofRandomuf() < CloudExp(noise))
 			{
 				selected = true;
-				useMesh->addVertex(ofVec3f(p.x * ofGetWidth()/2.0f, p.y * ofGetWidth()/2.0f));
+				useMesh->addVertex(ofVec3f(p.x * ofGetWidth()/2.0f, p.y * ofGetWidth()/2.0f, p.z));
 			}
 		}
 	}
@@ -75,12 +93,12 @@ void CloudMesh::triangulateMesh(ofMesh* useMesh)
 			{
 				continue;
 			}
-			if((sDist = currentVert.distanceSquared(useMesh->getVertex(j))) < first && sDist > 1000 && sDist <= 8000)
+			if((sDist = currentVert.distanceSquared(useMesh->getVertex(j))) < first && sDist > 1000 && sDist <= 16000)
 			{
 				first = sDist;
 				firstIndex = j;
 			}
-			else if((sDist = currentVert.distanceSquared(useMesh->getVertex(j))) < second && sDist > 1000 && sDist <= 8000)
+			else if((sDist = currentVert.distanceSquared(useMesh->getVertex(j))) < second && sDist > 1000 && sDist <= 16000 )
 			{
 				second = sDist;
 				secondIndex = j;
