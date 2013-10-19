@@ -61,12 +61,14 @@ void CloudMesh::populateMesh(ofMesh* useMesh, int planeNum)
 			{
 				z = ofRandomf() * 100.0f + (-100.0f * planeNum);
 			}
-			ofPoint p(ofRandomf()*5, ofRandomf()*7.5, z);
+			ofPoint p(ofRandomf()*5, ofRandomuf()*-7.5, z);
 			float noise = ofNoise(p.x, p.y, p.z);
 			if(ofRandomuf() < CloudExp(noise))
 			{
 				selected = true;
 				useMesh->addVertex(ofVec3f(p.x * ofGetWidth()/2.0f, p.y * ofGetWidth()/2.0f, p.z));
+				float t = ofRandomuf();
+				useMesh->addColor(ofColor(190, 59, 234)*t + ofColor(255, 255, 255)* (1- t));
 			}
 		}
 	}

@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 	//ofSetFullscreen(true);
+	ofBackground(100, 127, 220);
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	ofSetFrameRate(60);
 	ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
@@ -12,12 +13,11 @@ void testApp::setup(){
 	{
 		plane[i] = ofPlanePrimitive(ofGetWidth()*10, ofGetHeight()*15, 100, 150);
 		plane[i].setPosition(0.0f, i*-100.0f, -100.0);
-		plane[i].rotate(-60.0, 1, 0, 0);
+		plane[i].rotate(-45.0, 1, 0, 0);
 	}
 
 	mesh.setup();
 	mesh.setParent(plane[0]);
-
 
 }
 
@@ -29,16 +29,17 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 	ofTranslate(ofGetWidth()/2.0f, ofGetHeight()/2.0f);
-	ofSetColor(0);
+	ofSetColor(240);
 	//glPointSize(4.0);
 
 	// point to sphere point:  x = s + r*(p-s)/(norm(p-s))
 
 	for(int i = 0; i < 5; i++)
 	{
-		plane[i].rotate(-0.1, 1, 0, 0);
+		plane[i].move(0, 0.5, -0.5);
+		//plane[i].rotate(-0.1, 1, 0, 0);
 		glPointSize(3.0f-(3*i/5.0f));
-		plane[i].drawVertices();
+		//plane[i].drawVertices();
 	}
 	mesh.draw();
 	ofSetColor(255);
